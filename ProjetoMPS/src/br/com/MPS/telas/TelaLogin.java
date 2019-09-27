@@ -20,7 +20,7 @@ public class TelaLogin extends javax.swing.JFrame {
     ResultSet rs = null;
     
     public void logar(){
-        String sql="select * from tbusuario where login=? and senha =?";
+        String sql = "select * from tbusuarios where login=? and senha =?";
         
         try {
             // as linhas abaixo preparam a consulta ao banco em função do 
@@ -33,12 +33,15 @@ public class TelaLogin extends javax.swing.JFrame {
             rs = pst.executeQuery();
             //se existir usuario e senha correspondente
             if(rs.next()){
-                
+              TelaPrincipal principal = new TelaPrincipal();
+              principal.setVisible(true);
             }else{
                 JOptionPane.showMessageDialog(null, "usuário e/ou senha inválido(s)");
             }
             
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            
         }
     }
 
@@ -82,6 +85,11 @@ public class TelaLogin extends javax.swing.JFrame {
         jLabel2.setText("Senha");
 
         btnLogin.setText("Login");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
 
         lblStatus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/db_error.png"))); // NOI18N
 
@@ -130,6 +138,11 @@ public class TelaLogin extends javax.swing.JFrame {
         setSize(new java.awt.Dimension(372, 212));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        // Chamando o metodo logar
+        logar();
+    }//GEN-LAST:event_btnLoginActionPerformed
 
     /**
      * @param args the command line arguments
