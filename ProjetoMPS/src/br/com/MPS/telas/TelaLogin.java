@@ -18,10 +18,10 @@ public class TelaLogin extends javax.swing.JFrame {
     Connection conexao = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
-    
-    public void logar(){
+
+    public void logar() {
         String sql = "select * from tbusuarios where login=? and senha =?";
-        
+
         try {
             // as linhas abaixo preparam a consulta ao banco em função do 
             //que foi digitado nas caixas de texto . o? é substituido pelo 
@@ -32,24 +32,40 @@ public class TelaLogin extends javax.swing.JFrame {
             // a linha abaixo executa a query
             rs = pst.executeQuery();
             //se existir usuario e senha correspondente
-            if(rs.next()){
-              TelaPrincipal principal = new TelaPrincipal();
-              principal.setVisible(true);
-              this.dispose();
-              conexao.close();
-            }else{
-                JOptionPane.showMessageDialog(null, "usuário e/ou senha inválido(s)");
+            if (rs.next()) {
+                // a linha abaixo obtem o conteudo do campo perfil da tabela tbusuario
+                String perfil = rs.getString(9);
+                //System.out.println(perfil);
+                // a estrutura abaixo faz o tratamento do perfil do usuario
+                if (perfil.equals("admin")) {
+                    TelaPrincipal principal = new TelaPrincipal();
+                    principal.setVisible(true);
+                    TelaPrincipal.MenRelUser.setEnabled(true);
+                    TelaPrincipal.MenRelTodasOco.setEnabled(true);
+                    TelaPrincipal.lblUsuario.setText(rs.getString(2));
+                    
+
+                    this.dispose();
+                }else{
+                    TelaPrincipal principal = new TelaPrincipal();
+                    principal.setVisible(true);
+                    this.dispose();
+                      
+                }
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "usuário e/ou senha inválido(s)");
+                }
+
             }
-            
-        } catch (Exception e) {
+            catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
             
         }
-    }
-
-    /**
-     * Creates new form TelaLogin
-     */
+        }
+        /**
+         * Creates new form TelaLogin
+         */
     public TelaLogin() {
         initComponents();
         conexao = ModuloConexao.conector();
@@ -81,7 +97,6 @@ public class TelaLogin extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
         MenOp = new javax.swing.JMenu();
         MenOpSair = new javax.swing.JMenuItem();
 
@@ -108,9 +123,6 @@ public class TelaLogin extends javax.swing.JFrame {
 
         jMenuItem1.setText("Cidadao");
         jMenu1.add(jMenuItem1);
-
-        jMenuItem3.setText("Usuarios");
-        jMenu1.add(jMenuItem3);
 
         jMenuBar1.add(jMenu1);
 
@@ -187,8 +199,8 @@ public class TelaLogin extends javax.swing.JFrame {
 
     private void MenOpSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenOpSairActionPerformed
         // exibe uma caixa de diálogo
-        int sair = JOptionPane.showConfirmDialog(null,"Tem certeza que deseja sair?","Atenção", JOptionPane.YES_NO_OPTION);
-        if (sair == JOptionPane.YES_OPTION){
+        int sair = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja sair?", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (sair == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
     }//GEN-LAST:event_MenOpSairActionPerformed
@@ -238,7 +250,6 @@ public class TelaLogin extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JLabel lblStatus;
     private javax.swing.JPasswordField txtSenha;
     private javax.swing.JTextField txtUsuario;

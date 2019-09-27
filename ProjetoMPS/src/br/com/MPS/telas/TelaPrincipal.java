@@ -41,10 +41,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         MenRel = new javax.swing.JMenu();
         MenRelMinhasOco = new javax.swing.JMenuItem();
         MenRelTodasOco = new javax.swing.JMenuItem();
+        MenRelUser = new javax.swing.JMenuItem();
         MenOp = new javax.swing.JMenu();
         MenOpSair = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("AjeitaAqui");
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -85,7 +86,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
         MenRel.add(MenRelMinhasOco);
 
         MenRelTodasOco.setText("Todas as ocorrências");
+        MenRelTodasOco.setEnabled(false);
         MenRel.add(MenRelTodasOco);
+
+        MenRelUser.setText("Usuarios");
+        MenRelUser.setEnabled(false);
+        MenRel.add(MenRelUser);
 
         Menu.add(MenRel);
 
@@ -116,23 +122,23 @@ public class TelaPrincipal extends javax.swing.JFrame {
                         .addComponent(lblData)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(lblUsuario)
-                                .addGap(59, 59, 59))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jLabel2)
-                                .addGap(44, 44, 44))))))
+                                .addGap(43, 43, 43))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(lblUsuario)
+                                .addGap(72, 72, 72))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(46, 46, 46)
+                .addGap(45, 45, 45)
                 .addComponent(jLabel2)
-                .addGap(49, 49, 49)
+                .addGap(38, 38, 38)
                 .addComponent(lblUsuario)
-                .addGap(23, 23, 23)
+                .addGap(35, 35, 35)
                 .addComponent(lblData))
             .addComponent(Desktop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
@@ -200,10 +206,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem MenOpSair;
     private javax.swing.JMenu MenRel;
     private javax.swing.JMenuItem MenRelMinhasOco;
-    private javax.swing.JMenuItem MenRelTodasOco;
+    public static javax.swing.JMenuItem MenRelTodasOco;
+    public static javax.swing.JMenuItem MenRelUser;
     private javax.swing.JMenuBar Menu;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel lblData;
-    private javax.swing.JLabel lblUsuario;
+    public static javax.swing.JLabel lblUsuario;
     // End of variables declaration//GEN-END:variables
 }
