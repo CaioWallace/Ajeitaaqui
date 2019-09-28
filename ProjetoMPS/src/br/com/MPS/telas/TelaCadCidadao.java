@@ -164,7 +164,20 @@ public class TelaCadCidadao extends javax.swing.JFrame {
             try {
                 pst=conexao.prepareStatement(sql);
                 pst.setString(1, txtUsuId.getText());
-                pst.executeUpdate();
+                int apagado = pst.executeUpdate();
+                if( apagado > 0 ){
+                    JOptionPane.showMessageDialog(null, "Usuario Removido com Sucesso ");
+                   
+                    txtUsuId.setText(null);
+                    txtUsuNome.setText(null);
+                    txtUsuCPF.setText(null);
+                    txtUsuCEP.setText(null);
+                    txtUsuEmail.setText(null);
+                    txtUsuFone.setText(null);
+                    txtUsuLogin.setText(null);
+                    txtUsuSenha.setText(null);
+                    CboUsuPerfil.setSelectedItem(null);
+                }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e);
             }
