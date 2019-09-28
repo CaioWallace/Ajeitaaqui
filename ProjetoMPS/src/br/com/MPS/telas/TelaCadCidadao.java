@@ -9,34 +9,31 @@ package br.com.MPS.telas;
  *
  * @author Edvaldo
  */
-
 import java.sql.*;
 import br.com.MPS.dal.ModuloConexao;
 import javax.swing.JOptionPane;
+
 public class TelaCadCidadao extends javax.swing.JFrame {
-    
+
     Connection conexao = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
-
-    
-   
 
     /**
      * Creates new form TelaCadCidadao
      */
     public TelaCadCidadao() {
         initComponents();
-         conexao = ModuloConexao.conector();
+        conexao = ModuloConexao.conector();
     }
-    
-    private void consultar(){
+
+    private void consultar() {
         //metodo para consultar usuario
         String sql = "select * from tbusuarios where iduser = ?";
         try {
             pst = conexao.prepareStatement(sql);
             pst.setString(1, txtUsuId.getText());
-            rs=pst.executeQuery();
+            rs = pst.executeQuery();
             if (rs.next()) {
                 txtUsuNome.setText(rs.getString(2));
                 txtUsuCPF.setText(rs.getString(3));
@@ -46,10 +43,9 @@ public class TelaCadCidadao extends javax.swing.JFrame {
                 txtUsuLogin.setText(rs.getString(7));
                 //txtUsuSenha.setText(rs.getString(8));
                 CboUsuPerfil.setSelectedItem(rs.getString(9));
-                
-                
+
             } else {
-                JOptionPane.showMessageDialog(null," Usuario não cadastrado ");
+                JOptionPane.showMessageDialog(null, " Usuario não cadastrado ");
                 // as linhas abaixo "limpam" os campos
                 txtUsuNome.setText(null);
                 txtUsuCPF.setText(null);
@@ -58,37 +54,125 @@ public class TelaCadCidadao extends javax.swing.JFrame {
                 txtUsuFone.setText(null);
                 txtUsuLogin.setText(null);
                 //txtUsuSenha.setText(rs.getString(8));
-                CboUsuPerfil.setSelectedItem(null);
+                //CboUsuPerfil.setSelectedItem(null);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
+
     //metodo para adicionar usuários
-    private void adicionar(){
-       String sql = "insert into tbusuarios(iduser,usuario,cpf,cep,email,fone,login,senha,perfil) values(?,?,?,?,?,?,?,?,?)";
+    private void adicionar() {
+        String sql = "insert into tbusuarios(iduser,usuario,cpf,cep,email,fone,login,senha,perfil) values(?,?,?,?,?,?,?,?,?)";
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, txtUsuId.getText());
+            pst.setString(2, txtUsuNome.getText());
+            pst.setString(3, txtUsuCPF.getText());
+            pst.setString(4, txtUsuCEP.getText());
+            pst.setString(5, txtUsuEmail.getText());
+            pst.setString(6, txtUsuFone.getText());
+            pst.setString(7, txtUsuLogin.getText());
+            pst.setString(8, txtUsuSenha.getText());
+            pst.setString(9, CboUsuPerfil.getSelectedItem().toString());
+            // validação dos campos obrigatorios
+            if (txtUsuId.getText().isEmpty()||(txtUsuNome.getText().isEmpty()|| (txtUsuCPF.getText().isEmpty()|| (txtUsuCEP.getText().isEmpty()
+                    || (txtUsuEmail.getText().isEmpty() || (txtUsuFone.getText().isEmpty() || (txtUsuLogin.getText().isEmpty() || 
+                    (txtUsuSenha.getText().isEmpty() )))))))) {
+                
+                JOptionPane.showMessageDialog(null, " Preencha todos os Campos Obrigatório ");
+
+            } else {
+
+                //a linha abaixo atualiza a tabela usuarios com os dados do formulario
+                // a estrutura abaixo é usada para confirmar a inserção dos dados na tabela
+                int adicionado = pst.executeUpdate();
+                //a linha abaixo serve de apoio para entedimendo da logica
+                //System.out.println(adicionado);
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, " Usuario Cadastrado com Sucesso ");
+                    txtUsuId.setText(null);
+                    txtUsuNome.setText(null);
+                    txtUsuCPF.setText(null);
+                    txtUsuCEP.setText(null);
+                    txtUsuEmail.setText(null);
+                    txtUsuFone.setText(null);
+                    txtUsuLogin.setText(null);
+                    //txtUsuSenha.setText(rs.getString(8));
+                    //CboUsuPerfil.setSelectedItem(null);
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+    }
+    
+    //Criando o metodo para alterar dados do usuario
+    private void alterar(){
+        String sql="update tbusuarios set usuario=?, cpf=?, cep=?, email=?, fone=?, login=?, senha=?, perfil=? where iduser=? ";
+        
         try {
             pst=conexao.prepareStatement(sql);
-            pst.setString(1,txtUsuId.getText());
-            pst.setString(2,txtUsuNome.getText());
-            pst.setString(3,txtUsuCPF.getText());
-            pst.setString(4,txtUsuCEP.getText());
-            pst.setString(5,txtUsuEmail.getText());
-            pst.setString(6,txtUsuFone.getText());
-            pst.setString(7,txtUsuLogin.getText());
-            pst.setString(8,txtUsuSenha.getText());
-            pst.setString(9,CboUsuPerfil.getSelectedItem().toString());
+            pst.setString(1,txtUsuNome.getText());
+            pst.setString(2,txtUsuCPF.getText());
+            pst.setString(3,txtUsuCEP.getText());
+            pst.setString(4,txtUsuEmail.getText());
+            pst.setString(5,txtUsuFone.getText());
+            pst.setString(6,txtUsuLogin.getText());
+            pst.setString(7,txtUsuSenha.getText());
+            pst.setString(8,CboUsuPerfil.getSelectedItem().toString());
+            pst.setString(9, txtUsuId.getText());
             
-            //a linha abaixo atualiza a tabela usuarios com os dados do formulario
-            pst.executeUpdate();
+            if (txtUsuId.getText().isEmpty()||(txtUsuNome.getText().isEmpty()|| (txtUsuCPF.getText().isEmpty()|| (txtUsuCEP.getText().isEmpty()
+                    || (txtUsuEmail.getText().isEmpty() || (txtUsuFone.getText().isEmpty() || (txtUsuLogin.getText().isEmpty() || 
+                    (txtUsuSenha.getText().isEmpty() )))))))) {
+                
+                JOptionPane.showMessageDialog(null, " Preencha todos os Campos Obrigatório ");
+
+            } else {
+
+                //a linha abaixo atualiza a tabela usuarios com os dados do formulario
+                // a estrutura abaixo é usada para confirmar a auteração dos dados na tabela
+                int adicionado = pst.executeUpdate();
+                //a linha abaixo serve de apoio para entedimendo da logica
+                //System.out.println(adicionado);
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, " Dados do usuario Modificado  com Sucesso ");
+                    txtUsuId.setText(null);
+                    txtUsuNome.setText(null);
+                    txtUsuCPF.setText(null);
+                    txtUsuCEP.setText(null);
+                    txtUsuEmail.setText(null);
+                    txtUsuFone.setText(null);
+                    txtUsuLogin.setText(null);
+                    txtUsuSenha.setText(null);
+                    //CboUsuPerfil.setSelectedItem(null);
+                }
+            }
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-        
     }
-
+    //metodo responsavel pela remoção de usuarios
+    private void remover(){
+        //a etrutura abaixo confirma a remoão do usuario
+        int confirma=JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover este usuário? ", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (confirma==JOptionPane.YES_NO_OPTION) {
+            String sql = "delete from tbusuarios where iduser=?";
+            try {
+                pst=conexao.prepareStatement(sql);
+                pst.setString(1, txtUsuId.getText());
+                pst.executeUpdate();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+            
+        } else {
+        }
+    }
+            
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -126,23 +210,23 @@ public class TelaCadCidadao extends javax.swing.JFrame {
         setTitle("Cadastro de Usuario");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
-        jLabel1.setText("ID");
+        jLabel1.setText("* ID");
 
-        jLabel2.setText("Nome");
+        jLabel2.setText("* Nome");
 
-        jLabel3.setText("CPF");
+        jLabel3.setText("* CPF");
 
-        jLabel4.setText("CEP");
+        jLabel4.setText("* CEP");
 
-        jLabel5.setText("E-mail");
+        jLabel5.setText("* E-mail");
 
-        jLabel6.setText("Fone");
+        jLabel6.setText("* Fone");
 
-        jLabel7.setText("Login");
+        jLabel7.setText("* Login");
 
-        jLabel8.setText("Senha");
+        jLabel8.setText("* Senha");
 
-        jLabel9.setText("Perfil");
+        jLabel9.setText("* Perfil");
 
         CboUsuPerfil.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "admin", "user", " " }));
 
@@ -162,6 +246,11 @@ public class TelaCadCidadao extends javax.swing.JFrame {
         btnUsuRemove.setToolTipText("Remover");
         btnUsuRemove.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnUsuRemove.setPreferredSize(new java.awt.Dimension(80, 80));
+        btnUsuRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuRemoveActionPerformed(evt);
+            }
+        });
 
         btnUsuRead.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/read.png"))); // NOI18N
         btnUsuRead.setToolTipText("Consultar");
@@ -177,6 +266,11 @@ public class TelaCadCidadao extends javax.swing.JFrame {
         btnUsuUpdate.setToolTipText("Editar");
         btnUsuUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnUsuUpdate.setPreferredSize(new java.awt.Dimension(80, 80));
+        btnUsuUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuUpdateActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -186,32 +280,19 @@ public class TelaCadCidadao extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel10)
-                        .addGap(46, 46, 46)
-                        .addComponent(btnUsoCreate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addComponent(btnUsuRemove, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addComponent(btnUsuRead, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
-                        .addComponent(btnUsuUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 65, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel2)
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtUsuNome)
-                                .addGap(201, 201, 201))
+                            .addComponent(txtUsuNome)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(txtUsuId, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel9)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(CboUsuPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(201, 201, 201))))
+                                .addComponent(CboUsuPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(201, 201, 201))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
@@ -240,7 +321,18 @@ public class TelaCadCidadao extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(txtUsuSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(txtUsuEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(28, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addGap(46, 46, 46)
+                        .addComponent(btnUsoCreate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
+                        .addComponent(btnUsuRemove, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
+                        .addComponent(btnUsuRead, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(31, 31, 31)
+                        .addComponent(btnUsuUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -300,6 +392,16 @@ public class TelaCadCidadao extends javax.swing.JFrame {
         // chamando o metodo adicionar
         adicionar();
     }//GEN-LAST:event_btnUsoCreateActionPerformed
+
+    private void btnUsuUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuUpdateActionPerformed
+        // chamando o metodo alterar
+        alterar();
+    }//GEN-LAST:event_btnUsuUpdateActionPerformed
+
+    private void btnUsuRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuRemoveActionPerformed
+        // chamar o metodo remover
+        remover();
+    }//GEN-LAST:event_btnUsuRemoveActionPerformed
 
     /**
      * @param args the command line arguments
