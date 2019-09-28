@@ -35,6 +35,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         lblUsuario = new javax.swing.JLabel();
         lblData = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        btnCadPrincipal = new javax.swing.JButton();
         Menu = new javax.swing.JMenuBar();
         MenCad = new javax.swing.JMenu();
         MenCadOco = new javax.swing.JMenuItem();
@@ -58,11 +59,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         Desktop.setLayout(DesktopLayout);
         DesktopLayout.setHorizontalGroup(
             DesktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 640, Short.MAX_VALUE)
+            .addGap(0, 658, Short.MAX_VALUE)
         );
         DesktopLayout.setVerticalGroup(
             DesktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 439, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         lblUsuario.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -72,6 +73,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
         lblData.setText("Data");
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/Marca.png"))); // NOI18N
+
+        btnCadPrincipal.setText("Cadastrar");
+        btnCadPrincipal.setEnabled(false);
+        btnCadPrincipal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadPrincipalActionPerformed(evt);
+            }
+        });
 
         MenCad.setText("Cadastro");
 
@@ -87,6 +96,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         MenRelTodasOco.setText("Todas as ocorrências");
         MenRelTodasOco.setEnabled(false);
+        MenRelTodasOco.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenRelTodasOcoActionPerformed(evt);
+            }
+        });
         MenRel.add(MenRelTodasOco);
 
         MenRelUser.setText("Usuarios");
@@ -118,18 +132,21 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addComponent(Desktop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(32, 32, 32)
+                        .addGap(14, 14, 14)
                         .addComponent(lblData)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 135, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addGap(43, 43, 43))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(lblUsuario)
-                                .addGap(72, 72, 72))))))
+                                .addGap(72, 72, 72))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(btnCadPrincipal)
+                                .addGap(62, 62, 62))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -139,8 +156,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addGap(38, 38, 38)
                 .addComponent(lblUsuario)
                 .addGap(35, 35, 35)
-                .addComponent(lblData))
-            .addComponent(Desktop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblData)
+                .addGap(30, 30, 30)
+                .addComponent(btnCadPrincipal)
+                .addContainerGap(77, Short.MAX_VALUE))
+            .addComponent(Desktop)
         );
 
         setSize(new java.awt.Dimension(879, 486));
@@ -162,6 +182,17 @@ public class TelaPrincipal extends javax.swing.JFrame {
             System.exit(0);
         }
     }//GEN-LAST:event_MenOpSairActionPerformed
+
+    private void btnCadPrincipalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadPrincipalActionPerformed
+        // Chama a tela de Cadastro
+        TelaCadCidadao cidadao = new TelaCadCidadao();
+        cidadao.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnCadPrincipalActionPerformed
+
+    private void MenRelTodasOcoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenRelTodasOcoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_MenRelTodasOcoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -209,6 +240,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     public static javax.swing.JMenuItem MenRelTodasOco;
     public static javax.swing.JMenuItem MenRelUser;
     private javax.swing.JMenuBar Menu;
+    public static javax.swing.JButton btnCadPrincipal;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel lblData;
     public static javax.swing.JLabel lblUsuario;

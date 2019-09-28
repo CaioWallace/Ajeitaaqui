@@ -20,7 +20,9 @@ public class TelaLogin extends javax.swing.JFrame {
     ResultSet rs = null;
 
     public void logar() {
-        String sql = "select * from tbusuarios where login=? and senha =?";
+        String sql = "select * from tbusuarios where login=? and senha =?, "
+                + "select * from tbcidadao where login=? and senha=?";
+        
 
         try {
             // as linhas abaixo preparam a consulta ao banco em função do 
@@ -43,6 +45,7 @@ public class TelaLogin extends javax.swing.JFrame {
                     TelaPrincipal.MenRelUser.setEnabled(true);
                     TelaPrincipal.MenRelTodasOco.setEnabled(true);
                     TelaPrincipal.lblUsuario.setText(rs.getString(2));
+                    TelaPrincipal.btnCadPrincipal.setEnabled(true);
                     
 
                     this.dispose();
@@ -94,7 +97,6 @@ public class TelaLogin extends javax.swing.JFrame {
         btnLogin = new javax.swing.JButton();
         txtSenha = new javax.swing.JPasswordField();
         lblStatus = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -118,16 +120,9 @@ public class TelaLogin extends javax.swing.JFrame {
 
         lblStatus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/db_error.png"))); // NOI18N
 
-        jButton1.setText("Cadastrar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
         jMenu1.setText("Cadastro");
 
-        jMenuItem1.setText("Cidadao");
+        jMenuItem1.setText("Cidadão");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
@@ -166,10 +161,7 @@ public class TelaLogin extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addGap(16, 16, 16)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnLogin))
+                    .addComponent(btnLogin)
                     .addComponent(txtUsuario, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtSenha, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
@@ -193,9 +185,7 @@ public class TelaLogin extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnLogin)
-                    .addComponent(jButton1))
+                .addComponent(btnLogin)
                 .addContainerGap(38, Short.MAX_VALUE))
         );
 
@@ -217,18 +207,12 @@ public class TelaLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_MenOpSairActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-        TelaCadCidadao cidadao = new TelaCadCidadao();
-        cidadao.setVisible(true);
+        // chamar a tela de cliente
+        TelaCadCidadaoComun comun = new TelaCadCidadaoComun();
+        comun.setVisible(true);
         this.dispose();
+        
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // Chama a tela de Cadastro
-        TelaCadCidadao cidadao = new TelaCadCidadao();
-        cidadao.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -269,7 +253,6 @@ public class TelaLogin extends javax.swing.JFrame {
     private javax.swing.JMenu MenOp;
     private javax.swing.JMenuItem MenOpSair;
     private javax.swing.JButton btnLogin;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;

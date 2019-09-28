@@ -1,9 +1,10 @@
-use dbinfox;
-describe tbusuarios;
-select * from tbusuarios;
--- a linha abaixo adiciona um campo a tabela
-alter table tbusuarios add column perfil varchar(20) not null;
--- a linha abaixo remove um campo de uma tabela
--- alter table tbusuarios drop column perfil;
-update tbusuarios set perfil =  'admin' where iduser = 1;
-update tbusuarios set perfil =  'user' where iduser = 2;
+create table tbcidadao(
+idcid int primary Key auto_increment,
+nomecid varchar(50) not null,
+cpfcid  varchar(11) not null,
+cepcid varchar(20) not null,
+emailcid varchar(50),
+fonecid varchar(30) not null,
+logincid varchar(10) not null,
+senhacid varchar(20) not null
+);
