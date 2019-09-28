@@ -15,7 +15,7 @@ import net.proteanit.sql.DbUtils;
  * @author Edvaldo
  */
 public class TelaOcorrencia extends javax.swing.JInternalFrame {
-
+    
     Connection conexao = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
@@ -34,7 +34,7 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
         try {
             pst = conexao.prepareStatement(sql);
             pst.setString(1, txtCidPesquisar.getText() + "%");
-            rs=pst.executeQuery();
+            rs = pst.executeQuery();
             tblCidadao.setModel(DbUtils.resultSetToTableModel(rs));
             
         } catch (Exception e) {
@@ -42,34 +42,32 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
         }
     }
     
-    private void setar_campos(){
+    private void setar_campos() {
         int setar = tblCidadao.getSelectedRow();
         txtCidId.setText(tblCidadao.getModel().getValueAt(setar, 0).toString());
     }
-    
+
     // metodo para cadastrar uma ocorrencia
-    
-    private void emitir_ocorrencia(){
+    private void emitir_ocorrencia() {
         String sql = "insert into tbocorrencia(endereco,referencia,detalhes,idcidadao,Stts) values (?,?,?,?,?)";
         try {
-            pst=conexao.prepareStatement(sql);
+            pst = conexao.prepareStatement(sql);
             //pst.setString(1, cboStatus.getSelectedItem().toString() );
             pst.setString(1, txtEnd.getText());
             pst.setString(2, txtRefEnd.getText());
             pst.setString(3, txtDetOco.getText());
             pst.setString(4, txtCidId.getText());
-            pst.setString(5, txtCadStatus.getText());
-            
-            
+            pst.setString(5, cboOco.getSelectedItem().toString());
+
             // validação dos campos obrigatorios
             if ((txtCidId.getText().isEmpty() || txtRefEnd.getText().isEmpty())) {
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatorios ");
                 
             } else {
                 int adicionado = pst.executeUpdate();
-                if(adicionado > 0){
+                if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Occorencia cadastrada com sucesso ");
-                   
+                    
                     txtCidId.setText(null);
                     txtEnd.setText(null);
                     txtRefEnd.setText(null);
@@ -80,11 +78,39 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
+
     //metodo para pesquisar um ocorrencia
-    private void pesquisar_ocorrencia(){
+    private void pesquisar_ocorrencia() {
         // a linha abaixo cria uma caixa de entrada do tipo JOptionPane
         String num_oco = JOptionPane.showInputDialog(" Numero da Ocorrencia ");
+        String sql = "select * from tbocorrencia where ocorrencia = " + num_oco;
+        try {
+            pst = conexao.prepareStatement(sql);
+            rs = pst.executeQuery();
+            
+            if (rs.next()) {
+                txtOco.setText(rs.getString(1));
+                txtData.setText(rs.getString(2));
+                txtEnd.setText(rs.getString(3));
+                txtRefEnd.setText(rs.getString(4));
+                txtDetOco.setText(rs.getString(5));
+                txtCidId.setText(rs.getString(6));
+                cboOco.setSelectedItem(rs.getString(7));
+                //evitando problema
+                btsOcoAdicionar.setEnabled(false);
+                txtCidPesquisar.setEnabled(false);
+                tblCidadao.setVisible(false);
+                
+            } else {
+                JOptionPane.showMessageDialog(null, "Ocorrencia não cadastrada ");
+            }
+            
+        } catch (com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException e) {
+            JOptionPane.showMessageDialog(null, "Numero da Ocorrencia invalida");
+            //System.out.println(e);
+        } catch (Exception e2) {
+            JOptionPane.showMessageDialog(null, e2);
+        }
     }
 
     /**
@@ -121,7 +147,7 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
         btnOcoAlterar = new javax.swing.JButton();
         btnOcoExcluir = new javax.swing.JButton();
         btnOcoImprimir = new javax.swing.JButton();
-        txtCadStatus = new javax.swing.JTextField();
+        cboOco = new javax.swing.JComboBox<>();
 
         setClosable(true);
         setIconifiable(true);
@@ -140,6 +166,7 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
         txtOco.setEditable(false);
 
         txtData.setEditable(false);
+        txtData.setFont(new java.awt.Font("Tahoma", 1, 9)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -150,11 +177,11 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(txtOco)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(51, 51, 51)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
-                    .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(59, Short.MAX_VALUE))
+                    .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -185,6 +212,11 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
         jLabel5.setText("*ID");
 
         txtCidId.setEnabled(false);
+        txtCidId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCidIdActionPerformed(evt);
+            }
+        });
 
         tblCidadao.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -219,7 +251,7 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
                         .addComponent(txtCidPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(68, 68, 68)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtCidId, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -278,6 +310,8 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
         btnOcoImprimir.setToolTipText("Imprimir uma Ocorrencia");
         btnOcoImprimir.setPreferredSize(new java.awt.Dimension(80, 80));
 
+        cboOco.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Aberto", "Em Andamento", "Fechado" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -290,8 +324,8 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
                             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
-                                .addGap(17, 17, 17)
-                                .addComponent(txtCadStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(cboOco, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(47, 47, 47))
@@ -333,8 +367,8 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(txtCadStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(cboOco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -366,7 +400,7 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
 
     private void tblCidadaoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCidadaoKeyReleased
         
-        
+
     }//GEN-LAST:event_tblCidadaoKeyReleased
 
     private void txtCidPesquisarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCidPesquisarKeyReleased
@@ -389,6 +423,10 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
         pesquisar_ocorrencia();
     }//GEN-LAST:event_btnOcoPesquisarActionPerformed
 
+    private void txtCidIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCidIdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCidIdActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnOcoAlterar;
@@ -397,6 +435,7 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnOcoPesquisar;
     private javax.swing.JButton btsOcoAdicionar;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JComboBox<String> cboOco;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -409,7 +448,6 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblCidadao;
-    private javax.swing.JTextField txtCadStatus;
     private javax.swing.JTextField txtCidId;
     private javax.swing.JTextField txtCidPesquisar;
     private javax.swing.JTextField txtData;
