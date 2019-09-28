@@ -30,7 +30,7 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
 
     //metodo pesquisar cliente
     private void pesquisar_cidadao() {
-        String sql = "select idcid as Id, nomecid as Nome, cpfcid as CPF, cepcid as CEP, emailcid as Email, fonecid as Fone, logincid as login, senhacid as senha from tbcidadao where nomecid like ? ";
+        String sql = "select idcid as Id, nomecid as Nome, fonecid as Fone from tbcidadao where nomecid like ?";
         try {
             pst = conexao.prepareStatement(sql);
             pst.setString(1, txtCidPesquisar.getText() + "%");
@@ -40,6 +40,51 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
+    }
+    
+    private void setar_campos(){
+        int setar = tblCidadao.getSelectedRow();
+        txtCidId.setText(tblCidadao.getModel().getValueAt(setar, 0).toString());
+    }
+    
+    // metodo para cadastrar uma ocorrencia
+    
+    private void emitir_ocorrencia(){
+        String sql = "insert into tbocorrencia(endereco,referencia,detalhes,idcidadao,Stts) values (?,?,?,?,?)";
+        try {
+            pst=conexao.prepareStatement(sql);
+            //pst.setString(1, cboStatus.getSelectedItem().toString() );
+            pst.setString(1, txtEnd.getText());
+            pst.setString(2, txtRefEnd.getText());
+            pst.setString(3, txtDetOco.getText());
+            pst.setString(4, txtCidId.getText());
+            pst.setString(5, txtCadStatus.getText());
+            
+            
+            // validação dos campos obrigatorios
+            if ((txtCidId.getText().isEmpty() || txtRefEnd.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatorios ");
+                
+            } else {
+                int adicionado = pst.executeUpdate();
+                if(adicionado > 0){
+                    JOptionPane.showMessageDialog(null, "Occorencia cadastrada com sucesso ");
+                   
+                    txtCidId.setText(null);
+                    txtEnd.setText(null);
+                    txtRefEnd.setText(null);
+                    txtDetOco.setText(null);
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+    
+    //metodo para pesquisar um ocorrencia
+    private void pesquisar_ocorrencia(){
+        // a linha abaixo cria uma caixa de entrada do tipo JOptionPane
+        String num_oco = JOptionPane.showInputDialog(" Numero da Ocorrencia ");
     }
 
     /**
@@ -57,9 +102,6 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         txtOco = new javax.swing.JTextField();
         txtData = new javax.swing.JTextField();
-        rbtOrc = new javax.swing.JRadioButton();
-        rbtOco = new javax.swing.JRadioButton();
-        cboStatus = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         txtCidPesquisar = new javax.swing.JTextField();
@@ -79,6 +121,7 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
         btnOcoAlterar = new javax.swing.JButton();
         btnOcoExcluir = new javax.swing.JButton();
         btnOcoImprimir = new javax.swing.JButton();
+        txtCadStatus = new javax.swing.JTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -98,29 +141,20 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
 
         txtData.setEditable(false);
 
-        buttonGroup1.add(rbtOrc);
-        rbtOrc.setText("Orçamento");
-
-        buttonGroup1.add(rbtOco);
-        rbtOco.setText("Ordem de Serviço");
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(txtOco)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(51, 51, 51)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(txtOco)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(rbtOrc))
-                .addGap(39, 39, 39)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rbtOco)
                     .addComponent(jLabel2)
                     .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -133,14 +167,8 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtOco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rbtOrc)
-                    .addComponent(rbtOco))
-                .addContainerGap())
+                .addContainerGap(22, Short.MAX_VALUE))
         );
-
-        cboStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Aberto", "Em Andamento", "Fechado", " " }));
 
         jLabel3.setText("Situação");
 
@@ -156,17 +184,23 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
 
         jLabel5.setText("*ID");
 
+        txtCidId.setEnabled(false);
+
         tblCidadao.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "ID", "Nome", "Fone", "Problema"
+                "ID", "Nome", "Fone"
             }
         ));
+        tblCidadao.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblCidadaoMouseClicked(evt);
+            }
+        });
         tblCidadao.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 tblCidadaoKeyReleased(evt);
@@ -205,7 +239,8 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
                                 .addComponent(jLabel5)
                                 .addComponent(txtCidId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jLabel6.setText("Endereço ");
@@ -215,17 +250,32 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
         jLabel8.setText("Detalhes da Ocorrencia ");
 
         btsOcoAdicionar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/create.png"))); // NOI18N
+        btsOcoAdicionar.setToolTipText("Emitir uma Ocorrencia");
         btsOcoAdicionar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btsOcoAdicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btsOcoAdicionarActionPerformed(evt);
+            }
+        });
 
         btnOcoPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/read.png"))); // NOI18N
+        btnOcoPesquisar.setToolTipText("Procurar uma Ocorrencia");
         btnOcoPesquisar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnOcoPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOcoPesquisarActionPerformed(evt);
+            }
+        });
 
         btnOcoAlterar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/update.png"))); // NOI18N
+        btnOcoAlterar.setToolTipText("Editar uma Ocorrencia");
         btnOcoAlterar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         btnOcoExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/remove.png"))); // NOI18N
+        btnOcoExcluir.setToolTipText("Excluir uma Ocorrencia");
 
         btnOcoImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/printer.png"))); // NOI18N
+        btnOcoImprimir.setToolTipText("Imprimir uma Ocorrencia");
         btnOcoImprimir.setPreferredSize(new java.awt.Dimension(80, 80));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -237,11 +287,11 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(cboStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(17, 17, 17)
+                                .addComponent(txtCadStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(47, 47, 47))
@@ -281,10 +331,10 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(15, 15, 15)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(cboStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtCadStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -324,6 +374,21 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
         pesquisar_cidadao();
     }//GEN-LAST:event_txtCidPesquisarKeyReleased
 
+    private void tblCidadaoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCidadaoMouseClicked
+        // chamando o metodo setar_campos
+        setar_campos();
+    }//GEN-LAST:event_tblCidadaoMouseClicked
+
+    private void btsOcoAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btsOcoAdicionarActionPerformed
+        // metodo de emitir ocorrencia
+        emitir_ocorrencia();
+    }//GEN-LAST:event_btsOcoAdicionarActionPerformed
+
+    private void btnOcoPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOcoPesquisarActionPerformed
+        // chamar o metodo pesquisar ocorrencia
+        pesquisar_ocorrencia();
+    }//GEN-LAST:event_btnOcoPesquisarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnOcoAlterar;
@@ -332,7 +397,6 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnOcoPesquisar;
     private javax.swing.JButton btsOcoAdicionar;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JComboBox<String> cboStatus;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -344,9 +408,8 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JRadioButton rbtOco;
-    private javax.swing.JRadioButton rbtOrc;
     private javax.swing.JTable tblCidadao;
+    private javax.swing.JTextField txtCadStatus;
     private javax.swing.JTextField txtCidId;
     private javax.swing.JTextField txtCidPesquisar;
     private javax.swing.JTextField txtData;

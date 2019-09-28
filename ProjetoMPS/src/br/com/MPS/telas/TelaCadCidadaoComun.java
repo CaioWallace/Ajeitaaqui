@@ -195,6 +195,7 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cadastro de Cidadao");
+        setResizable(false);
 
         jLabel2.setText("* Nome");
 
