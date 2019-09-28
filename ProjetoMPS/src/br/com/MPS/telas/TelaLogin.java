@@ -22,7 +22,7 @@ public class TelaLogin extends javax.swing.JFrame {
     public void logar() {
         
             
-        String sql = "select * from tbusuarios where login=? and senha =?, ";
+        String sql = "select * from tbusuarios where login=? and senha =? ";
 
         try {
             // as linhas abaixo preparam a consulta ao banco em função do 
