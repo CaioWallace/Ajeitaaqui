@@ -31,6 +31,7 @@ public class TelaCadCidadao extends javax.swing.JFrame {
     }
     
     private void consultar(){
+        //metodo para consultar usuario
         String sql = "select * from tbusuarios where iduser = ?";
         try {
             pst = conexao.prepareStatement(sql);
@@ -62,6 +63,30 @@ public class TelaCadCidadao extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
+    }
+    
+    //metodo para adicionar usuários
+    private void adicionar(){
+       String sql = "insert into tbusuarios(iduser,usuario,cpf,cep,email,fone,login,senha,perfil) values(?,?,?,?,?,?,?,?,?)";
+        try {
+            pst=conexao.prepareStatement(sql);
+            pst.setString(1,txtUsuId.getText());
+            pst.setString(2,txtUsuNome.getText());
+            pst.setString(3,txtUsuCPF.getText());
+            pst.setString(4,txtUsuCEP.getText());
+            pst.setString(5,txtUsuEmail.getText());
+            pst.setString(6,txtUsuFone.getText());
+            pst.setString(7,txtUsuLogin.getText());
+            pst.setString(8,txtUsuSenha.getText());
+            pst.setString(9,CboUsuPerfil.getSelectedItem().toString());
+            
+            //a linha abaixo atualiza a tabela usuarios com os dados do formulario
+            pst.executeUpdate();
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        
     }
 
     /**
@@ -127,6 +152,11 @@ public class TelaCadCidadao extends javax.swing.JFrame {
         btnUsoCreate.setToolTipText("Adicionar");
         btnUsoCreate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnUsoCreate.setPreferredSize(new java.awt.Dimension(80, 80));
+        btnUsoCreate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsoCreateActionPerformed(evt);
+            }
+        });
 
         btnUsuRemove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/remove.png"))); // NOI18N
         btnUsuRemove.setToolTipText("Remover");
@@ -265,6 +295,11 @@ public class TelaCadCidadao extends javax.swing.JFrame {
         // Chamando o metodo consultar
         consultar();
     }//GEN-LAST:event_btnUsuReadActionPerformed
+
+    private void btnUsoCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsoCreateActionPerformed
+        // chamando o metodo adicionar
+        adicionar();
+    }//GEN-LAST:event_btnUsoCreateActionPerformed
 
     /**
      * @param args the command line arguments
