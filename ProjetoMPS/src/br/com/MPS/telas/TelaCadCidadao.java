@@ -100,6 +100,8 @@ public class TelaCadCidadao extends javax.swing.JFrame {
                     txtUsuLogin.setText(null);
                     //txtUsuSenha.setText(rs.getString(8));
                     //CboUsuPerfil.setSelectedItem(null);
+                    
+                    
                 }
             }
         } catch (Exception e) {

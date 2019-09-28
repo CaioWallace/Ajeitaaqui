@@ -20,9 +20,9 @@ public class TelaLogin extends javax.swing.JFrame {
     ResultSet rs = null;
 
     public void logar() {
-        String sql = "select * from tbusuarios where login=? and senha =?, "
-                + "select * from tbcidadao where login=? and senha=?";
         
+            
+        String sql = "select * from tbusuarios where login=? and senha =?, ";
 
         try {
             // as linhas abaixo preparam a consulta ao banco em função do 
@@ -62,11 +62,15 @@ public class TelaLogin extends javax.swing.JFrame {
                 }
 
             }
+        
+        
             catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
             
         }
         }
+    
+    
         /**
          * Creates new form TelaLogin
          */
