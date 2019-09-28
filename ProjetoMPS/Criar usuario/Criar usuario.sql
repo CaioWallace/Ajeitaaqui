@@ -8,3 +8,7 @@ fonecid varchar(30) not null,
 logincid varchar(10) not null,
 senhacid varchar(20) not null
 );
+
+select * from tbcidadao;
+
+select * from tbusuarios;

@@ -57,6 +57,7 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
                 //System.out.println(adicionado);
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, " Cidadao Cadastrado com Sucesso ");
+                    
                     txtComunNome.setText(null);
                     txtComunCEP.setText(null);
                     txtComunCPF.setText(null);
@@ -64,8 +65,7 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
                     txtComunEmail.setText(null);
                     txtComunLogin.setText(null);
                     txtComunSenha.setText(null);
-                    //txtUsuSenha.setText(rs.getString(8));
-                    //CboUsuPerfil.setSelectedItem(null);
+                    ;
                 }
             }
         } catch (Exception e) {
@@ -81,13 +81,82 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
             pst = conexao.prepareStatement(sql);
             // caixa de pesquisa para o ?
             //atenção ao "%" - continuação na String sql
-            pst.setString(1, txtComunPesquisar.getText() );
+            pst.setString(1, txtComunPesquisar.getText() + "%");
             rs = pst.executeQuery();
             // a linha abaixo usa a biblioteca rs2xml.jar para prencher a tabela
-            
+
             tblCidadao.setModel(DbUtils.resultSetToTableModel(rs));
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    // método para setar os campos
+    public void setar_campos() {
+        int setar = tblCidadao.getSelectedRow();
+        txtIdCid.setText(tblCidadao.getModel().getValueAt(setar, 0).toString());
+        txtComunNome.setText(tblCidadao.getModel().getValueAt(setar, 1).toString());
+        txtComunCPF.setText(tblCidadao.getModel().getValueAt(setar, 2).toString());
+        txtComunCEP.setText(tblCidadao.getModel().getValueAt(setar, 3).toString());
+        txtComunEmail.setText(tblCidadao.getModel().getValueAt(setar, 4).toString());
+        txtComunFone.setText(tblCidadao.getModel().getValueAt(setar, 5).toString());
+        txtComunLogin.setText(tblCidadao.getModel().getValueAt(setar, 6).toString());
+        txtComunSenha.setText(tblCidadao.getModel().getValueAt(setar, 7).toString());
+
+        btnAdicionar.setEnabled(false);
+    }
+        // a linha abaio desabilita  o botão adicionar
+        
+        
+
+    //metodo para alterar dados do cliente
+    private void alterar() {
+        
+        String sql = "update tbcidadao set nomecid=?, cpfcid=?, cepcid=?, emailcid=?, fonecid=?, logincid=?, senhacid=?  where idcid=? ";
+
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, txtComunNome.getText());
+            pst.setString(2, txtComunCPF.getText());
+            pst.setString(3, txtComunCEP.getText());
+            pst.setString(4, txtComunEmail.getText());
+            pst.setString(5, txtComunFone.getText());
+            pst.setString(6, txtComunLogin.getText());
+            pst.setString(7, txtComunSenha.getText());
+
+            if (txtComunNome.getText().isEmpty() || (txtComunCPF.getText().isEmpty() || (txtComunCEP.getText().isEmpty()
+                    || (txtComunFone.getText().isEmpty() || (txtComunLogin.getText().isEmpty() || (txtComunSenha.getText().isEmpty())))))) {
+
+                JOptionPane.showMessageDialog(null, " Preencha todos os Campos Obrigatório ");
+
+            } else {
+
+                //a linha abaixo atualiza a tabela usuarios com os dados do formulario
+                // a estrutura abaixo é usada para confirmar a auteração dos dados na tabela
+                int adicionado = pst.executeUpdate();
+                //a linha abaixo serve de apoio para entedimendo da logica
+                //System.out.println(adicionado);
+                if (adicionado > 0) {
+                    
+                    JOptionPane.showMessageDialog(null, " Dados do Cidadão Modificado  com Sucesso ");
+                    
+                    txtComunNome.setText(null);
+                    txtComunCPF.setText(null);
+                    txtComunCEP.setText(null);
+                    txtComunEmail.setText(null);
+                    txtComunFone.setText(null);
+                    txtComunLogin.setText(null);
+                    txtComunSenha.setText(null);
+                    btnAdicionar.setEnabled(true);
+
+                    
+                }
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            System.out.println(e);
         }
     }
 
@@ -121,6 +190,8 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblCidadao = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        txtIdCid = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cadastro de Cidadao");
@@ -149,6 +220,11 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
 
         btnAlterar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/update.png"))); // NOI18N
         btnAlterar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlterarActionPerformed(evt);
+            }
+        });
 
         txtComunPesquisar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -174,61 +250,21 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblCidadao.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblCidadaoMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblCidadao);
+
+        jLabel1.setText("ID");
+
+        txtIdCid.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtComunNome, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtComunFone))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtComunCEP))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtComunLogin, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(39, 39, 39)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(txtComunEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel3)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(txtComunCPF))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(31, 31, 31)
-                                .addComponent(jLabel8)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtComunSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(txtComunPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel10))
-                            .addComponent(jLabel9))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addGroup(layout.createSequentialGroup()
                 .addGap(178, 178, 178)
                 .addComponent(btnAdicionar)
@@ -239,13 +275,67 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
                 .addContainerGap(53, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 41, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtComunPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel10))
+                            .addComponent(jLabel9))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtComunNome, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtIdCid, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtComunFone))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtComunCEP))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtComunLogin, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(39, 39, 39)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel5)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(txtComunEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel3)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(txtComunCPF))))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(31, 31, 31)
+                                        .addComponent(jLabel8)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtComunSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel9)
-                .addGap(40, 40, 40)
+                .addGap(85, 85, 85)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txtComunPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10))
@@ -262,7 +352,9 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
                             .addComponent(txtComunCPF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2)
-                        .addComponent(txtComunNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtComunNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1)
+                        .addComponent(txtIdCid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
@@ -279,7 +371,7 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnAlterar, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnAdicionar, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -300,6 +392,16 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
     private void txtComunPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtComunPesquisarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtComunPesquisarActionPerformed
+
+    private void tblCidadaoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCidadaoMouseClicked
+        // setar os dados
+        setar_campos();
+    }//GEN-LAST:event_tblCidadaoMouseClicked
+
+    private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
+        // chamando o metodo para alterar cidadao
+        alterar();
+    }//GEN-LAST:event_btnAlterarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -339,6 +441,7 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdicionar;
     private javax.swing.JButton btnAlterar;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -358,5 +461,6 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
     private javax.swing.JTextField txtComunNome;
     private javax.swing.JTextField txtComunPesquisar;
     private javax.swing.JTextField txtComunSenha;
+    private javax.swing.JTextField txtIdCid;
     // End of variables declaration//GEN-END:variables
 }

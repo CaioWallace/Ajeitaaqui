@@ -55,11 +55,13 @@ public class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
+        Desktop.setPreferredSize(new java.awt.Dimension(686, 447));
+
         javax.swing.GroupLayout DesktopLayout = new javax.swing.GroupLayout(Desktop);
         Desktop.setLayout(DesktopLayout);
         DesktopLayout.setHorizontalGroup(
             DesktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 658, Short.MAX_VALUE)
+            .addGap(0, 756, Short.MAX_VALUE)
         );
         DesktopLayout.setVerticalGroup(
             DesktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -85,6 +87,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         MenCad.setText("Cadastro");
 
         MenCadOco.setText("Ocorrencias");
+        MenCadOco.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenCadOcoActionPerformed(evt);
+            }
+        });
         MenCad.add(MenCadOco);
 
         Menu.add(MenCad);
@@ -129,13 +136,13 @@ public class TelaPrincipal extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(Desktop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Desktop, javax.swing.GroupLayout.PREFERRED_SIZE, 756, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
                         .addComponent(lblData)
-                        .addGap(0, 135, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 150, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -159,11 +166,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addComponent(lblData)
                 .addGap(30, 30, 30)
                 .addComponent(btnCadPrincipal)
-                .addContainerGap(77, Short.MAX_VALUE))
-            .addComponent(Desktop)
+                .addContainerGap(140, Short.MAX_VALUE))
+            .addComponent(Desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
         );
 
-        setSize(new java.awt.Dimension(879, 486));
+        setSize(new java.awt.Dimension(982, 549));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -193,6 +200,13 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private void MenRelTodasOcoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenRelTodasOcoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_MenRelTodasOcoActionPerformed
+
+    private void MenCadOcoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenCadOcoActionPerformed
+        // Chamando a tela de ocorrencias
+        TelaOcorrencia oco=new TelaOcorrencia();
+        oco.setVisible(true);
+        Desktop.add(oco);
+    }//GEN-LAST:event_MenCadOcoActionPerformed
 
     /**
      * @param args the command line arguments
