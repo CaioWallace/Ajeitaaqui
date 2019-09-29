@@ -112,6 +112,48 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e2);
         }
     }
+    // metodo de alterar ocorrencia
+    private void alterar_ocorrencia(){
+        String sql = "update tbocorrencia set endereco=?, referencia=?, detalhes=?,Stts=? where ocorrencia = ? ";
+        
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, txtEnd.getText());
+            pst.setString(2, txtRefEnd.getText());
+            pst.setString(3, txtDetOco.getText());
+            pst.setString(4, cboOco.getSelectedItem().toString());
+            pst.setString(5, txtOco.getText());
+            
+             if ((txtCidId.getText().isEmpty() || txtRefEnd.getText().isEmpty())) {
+                JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatorios ");
+                
+            } else {
+                int adicionado = pst.executeUpdate();
+               
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "Occorencia alterada com sucesso ");
+                    
+                    txtOco.setText(null);
+                    txtData.setText(null);
+                    txtCidId.setText(null);
+                    txtEnd.setText(null);
+                    txtRefEnd.setText(null);
+                    txtDetOco.setText(null);
+                    //habilitar os objetos
+                    btsOcoAdicionar.setEnabled(true);
+                    txtCidPesquisar.setEnabled(true);
+                    tblCidadao.setVisible(true);
+                    
+                    
+                }
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        
+        
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -302,6 +344,11 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
         btnOcoAlterar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/update.png"))); // NOI18N
         btnOcoAlterar.setToolTipText("Editar uma Ocorrencia");
         btnOcoAlterar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnOcoAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOcoAlterarActionPerformed(evt);
+            }
+        });
 
         btnOcoExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/remove.png"))); // NOI18N
         btnOcoExcluir.setToolTipText("Excluir uma Ocorrencia");
@@ -426,6 +473,11 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
     private void txtCidIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCidIdActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCidIdActionPerformed
+
+    private void btnOcoAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOcoAlterarActionPerformed
+        // chama o metodo de alterar ocorrencia
+        alterar_ocorrencia();
+    }//GEN-LAST:event_btnOcoAlterarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
