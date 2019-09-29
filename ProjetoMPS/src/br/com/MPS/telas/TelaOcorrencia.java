@@ -15,7 +15,7 @@ import net.proteanit.sql.DbUtils;
  * @author Edvaldo
  */
 public class TelaOcorrencia extends javax.swing.JInternalFrame {
-    
+
     Connection conexao = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
@@ -36,12 +36,12 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
             pst.setString(1, txtCidPesquisar.getText() + "%");
             rs = pst.executeQuery();
             tblCidadao.setModel(DbUtils.resultSetToTableModel(rs));
-            
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
+
     private void setar_campos() {
         int setar = tblCidadao.getSelectedRow();
         txtCidId.setText(tblCidadao.getModel().getValueAt(setar, 0).toString());
@@ -62,12 +62,12 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
             // validação dos campos obrigatorios
             if ((txtCidId.getText().isEmpty() || txtRefEnd.getText().isEmpty())) {
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatorios ");
-                
+
             } else {
                 int adicionado = pst.executeUpdate();
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Occorencia cadastrada com sucesso ");
-                    
+
                     txtCidId.setText(null);
                     txtEnd.setText(null);
                     txtRefEnd.setText(null);
@@ -87,7 +87,7 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
         try {
             pst = conexao.prepareStatement(sql);
             rs = pst.executeQuery();
-            
+
             if (rs.next()) {
                 txtOco.setText(rs.getString(1));
                 txtData.setText(rs.getString(2));
@@ -100,11 +100,11 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
                 btsOcoAdicionar.setEnabled(false);
                 txtCidPesquisar.setEnabled(false);
                 tblCidadao.setVisible(false);
-                
+
             } else {
                 JOptionPane.showMessageDialog(null, "Ocorrencia não cadastrada ");
             }
-            
+
         } catch (com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException e) {
             JOptionPane.showMessageDialog(null, "Numero da Ocorrencia invalida");
             //System.out.println(e);
@@ -112,10 +112,11 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e2);
         }
     }
+
     // metodo de alterar ocorrencia
-    private void alterar_ocorrencia(){
+    private void alterar_ocorrencia() {
         String sql = "update tbocorrencia set endereco=?, referencia=?, detalhes=?,Stts=? where ocorrencia = ? ";
-        
+
         try {
             pst = conexao.prepareStatement(sql);
             pst.setString(1, txtEnd.getText());
@@ -123,16 +124,16 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
             pst.setString(3, txtDetOco.getText());
             pst.setString(4, cboOco.getSelectedItem().toString());
             pst.setString(5, txtOco.getText());
-            
-             if ((txtCidId.getText().isEmpty() || txtRefEnd.getText().isEmpty())) {
+
+            if ((txtCidId.getText().isEmpty() || txtRefEnd.getText().isEmpty())) {
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatorios ");
-                
+
             } else {
                 int adicionado = pst.executeUpdate();
-               
+
                 if (adicionado > 0) {
                     JOptionPane.showMessageDialog(null, "Occorencia alterada com sucesso ");
-                    
+
                     txtOco.setText(null);
                     txtData.setText(null);
                     txtCidId.setText(null);
@@ -143,16 +144,45 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
                     btsOcoAdicionar.setEnabled(true);
                     txtCidPesquisar.setEnabled(true);
                     tblCidadao.setVisible(true);
-                    
-                    
+
                 }
             }
-            
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-        
-        
+    }
+
+    //metodo para excluir uma ocorrencia
+    private void excluir_ocorrencia() {
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja excluir esta Ocorrencia? ", "Atenção", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            String sql = "delete from tbocorrencia where ocorrencia=?";
+            try {
+                pst = conexao.prepareStatement(sql);
+                pst.setString(1, txtOco.getText());
+                int apagado = pst.executeUpdate();
+                if (apagado > 0) {
+                    JOptionPane.showMessageDialog(null, "Ocorrencia apagada");
+
+                    txtOco.setText(null);
+                    txtData.setText(null);
+                    txtCidId.setText(null);
+                    txtEnd.setText(null);
+                    txtRefEnd.setText(null);
+                    txtDetOco.setText(null);
+                    //habilitar os objetos
+                    btsOcoAdicionar.setEnabled(true);
+                    txtCidPesquisar.setEnabled(true);
+                    tblCidadao.setVisible(true);
+
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+
+        }
     }
 
     /**
@@ -352,6 +382,11 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
 
         btnOcoExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/remove.png"))); // NOI18N
         btnOcoExcluir.setToolTipText("Excluir uma Ocorrencia");
+        btnOcoExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOcoExcluirActionPerformed(evt);
+            }
+        });
 
         btnOcoImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/printer.png"))); // NOI18N
         btnOcoImprimir.setToolTipText("Imprimir uma Ocorrencia");
@@ -446,7 +481,7 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tblCidadaoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblCidadaoKeyReleased
-        
+
 
     }//GEN-LAST:event_tblCidadaoKeyReleased
 
@@ -478,6 +513,11 @@ public class TelaOcorrencia extends javax.swing.JInternalFrame {
         // chama o metodo de alterar ocorrencia
         alterar_ocorrencia();
     }//GEN-LAST:event_btnOcoAlterarActionPerformed
+
+    private void btnOcoExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOcoExcluirActionPerformed
+        // chamando o metodo para excluir uma ocorrencia
+        excluir_ocorrencia();
+    }//GEN-LAST:event_btnOcoExcluirActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
