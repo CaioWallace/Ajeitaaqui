@@ -6,7 +6,7 @@
 package br.com.MPS.telas;
 
 import java.sql.*;
-import br.com.MPS.dao.ModuloConexao;
+import br.com.MPS.dao.ConnectionFactory;
 import javax.swing.JOptionPane;
 //a linha abaixo importa recursos da biblioteca rs2xml.jar
 import net.proteanit.sql.DbUtils;
@@ -26,7 +26,7 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
      */
     public TelaCadCidadaoComun() {
         initComponents();
-        conexao = ModuloConexao.conector();
+        conexao = new ConnectionFactory().getConnection();
     }
 
     //metodo para adicionar cidadao comun

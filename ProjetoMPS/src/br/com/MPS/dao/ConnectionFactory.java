@@ -8,13 +8,15 @@ package br.com.MPS.dao;
 import java.sql.*;
 
 /**
- *
+ * Padrão Factory Method para obter uma conexão com o Banco de Dados.
+ * 
  * @author Edvaldo
  */
-public class ModuloConexao {
+public class ConnectionFactory {
 
     //método responsavel por estabelecer a conexão com o banco
-    public static Connection conector () {
+    public Connection getConnection() {
+        
         java.sql.Connection conexao = null;
         // a linha abaixo "chama" o drive
         String driver = "com.mysql.jdbc.Driver";
