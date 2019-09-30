@@ -10,7 +10,7 @@ package br.com.MPS.telas;
  * @author Edvaldo
  */
 import java.sql.*;
-import br.com.MPS.dal.ModuloConexao;
+import br.com.MPS.dao.ModuloConexao;
 import javax.swing.JOptionPane;
 
 public class TelaCadCidadao extends javax.swing.JFrame {

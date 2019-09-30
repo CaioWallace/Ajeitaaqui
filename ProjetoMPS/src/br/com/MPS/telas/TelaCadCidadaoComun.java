@@ -6,7 +6,7 @@
 package br.com.MPS.telas;
 
 import java.sql.*;
-import br.com.MPS.dal.ModuloConexao;
+import br.com.MPS.dao.ModuloConexao;
 import javax.swing.JOptionPane;
 //a linha abaixo importa recursos da biblioteca rs2xml.jar
 import net.proteanit.sql.DbUtils;

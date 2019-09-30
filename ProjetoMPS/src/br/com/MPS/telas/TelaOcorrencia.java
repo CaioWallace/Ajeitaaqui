@@ -6,7 +6,7 @@
 package br.com.MPS.telas;
 
 import java.sql.*;
-import br.com.MPS.dal.ModuloConexao;
+import br.com.MPS.dao.ModuloConexao;
 import javax.swing.JOptionPane;
 import net.proteanit.sql.DbUtils;
 
