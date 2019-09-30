@@ -80,3 +80,7 @@ C.nomecid,fonecid,emailcid
 from tbocorrencia as O
 inner join tbcidadao as C
 on (O.idcidadao = C.idcid);
+
+
+ALTER TABLE tbusuarios
+CREATE COLUMN perfil VARCHAR(20);
