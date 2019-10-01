@@ -10,9 +10,11 @@ package br.com.MPS.telas;
  * @author Edvaldo
  */
 import br.com.MPS.dao.DaoAbstractFactory;
+import br.com.MPS.dao.DaoCommand;
 import br.com.MPS.dao.DaoException;
 import br.com.MPS.dao.UsuarioDao;
 import br.com.MPS.dao.impl.DaoFactoryImpl;
+import br.com.MPS.dao.impl.DeleteUsuarioCommand;
 import br.com.MPS.entity.Usuario;
 import javax.swing.JOptionPane;
 
@@ -128,10 +130,10 @@ public class TelaCadCidadao extends javax.swing.JFrame {
         //a etrutura abaixo confirma a remoão do usuario
         int confirma=JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover este usuário? ", "Atenção", JOptionPane.YES_NO_OPTION);
         if (confirma==JOptionPane.YES_NO_OPTION) {
-            String sql = "delete from tbusuarios where iduser=?";
             try {
                 UsuarioDao<Usuario> usuarioDao = daoFactory.getUsuarioDao();
-                usuarioDao.delete(Integer.parseInt(txtUsuId.getText()));
+                DaoCommand deleteUsuarioCmd = new DeleteUsuarioCommand(usuarioDao, Integer.parseInt(txtUsuId.getText()));
+                deleteUsuarioCmd.execute();
                 
                 JOptionPane.showMessageDialog(null, "Usuário deletado com sucesso.");
             } catch (NumberFormatException e) {
