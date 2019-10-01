@@ -90,88 +90,64 @@ public class TelaCadCidadao extends javax.swing.JFrame {
             txtUsuEmail.setText(null);
             txtUsuFone.setText(null);
             txtUsuLogin.setText(null);
-        } catch (DaoException | HeadlessException e) {
-            JOptionPane.showMessageDialog(null, e);
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, txtUsuId.getText() + " não é um identificador válido.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
         }
     }
     
     //Criando o metodo para alterar dados do usuario
     private void alterar(){
-        String sql="update tbusuarios set usuario=?, cpf=?, cep=?, email=?, fone=?, login=?, senha=?, perfil=? where iduser=? ";
+        UsuarioDao<Usuario> usuarioDao = daoFactory.getUsuarioDao();
         
         try {
-            pst=conexao.prepareStatement(sql);
-            pst.setString(1,txtUsuNome.getText());
-            pst.setString(2,txtUsuCPF.getText());
-            pst.setString(3,txtUsuCEP.getText());
-            pst.setString(4,txtUsuEmail.getText());
-            pst.setString(5,txtUsuFone.getText());
-            pst.setString(6,txtUsuLogin.getText());
-            pst.setString(7,txtUsuSenha.getText());
-            pst.setString(8,CboUsuPerfil.getSelectedItem().toString());
-            pst.setString(9, txtUsuId.getText());
+            Usuario usuario = new Usuario.Builder()
+                .setId(Integer.parseInt(txtUsuId.getText()))
+                .setUsuario(txtUsuNome.getText())
+                .setCpf(txtUsuCPF.getText())
+                .setCep(txtUsuCEP.getText())
+                .setEmail(txtUsuEmail.getText())
+                .setFone(txtUsuFone.getText())
+                .setLogin(txtUsuLogin.getText())
+                .setSenha(txtUsuSenha.getText())
+                .setPerfil(CboUsuPerfil.getSelectedItem().toString())
+                .build();
             
-            if (txtUsuId.getText().isEmpty()||(txtUsuNome.getText().isEmpty()|| (txtUsuCPF.getText().isEmpty()|| (txtUsuCEP.getText().isEmpty()
-                    || (txtUsuEmail.getText().isEmpty() || (txtUsuFone.getText().isEmpty() || (txtUsuLogin.getText().isEmpty() || 
-                    (txtUsuSenha.getText().isEmpty() )))))))) {
-                
-                JOptionPane.showMessageDialog(null, " Preencha todos os Campos Obrigatório ");
-
-            } else {
-
-                //a linha abaixo atualiza a tabela usuarios com os dados do formulario
-                // a estrutura abaixo é usada para confirmar a auteração dos dados na tabela
-                int adicionado = pst.executeUpdate();
-                //a linha abaixo serve de apoio para entedimendo da logica
-                //System.out.println(adicionado);
-                if (adicionado > 0) {
-                    JOptionPane.showMessageDialog(null, " Dados do usuario Modificado  com Sucesso ");
-                    txtUsuId.setText(null);
-                    txtUsuNome.setText(null);
-                    txtUsuCPF.setText(null);
-                    txtUsuCEP.setText(null);
-                    txtUsuEmail.setText(null);
-                    txtUsuFone.setText(null);
-                    txtUsuLogin.setText(null);
-                    txtUsuSenha.setText(null);
-                    //CboUsuPerfil.setSelectedItem(null);
-                }
-            }
+            usuarioDao.update(usuario);
             
+            JOptionPane.showMessageDialog(null, " Dados do usuário modificados com sucesso.");
+            txtUsuId.setText(null);
+            txtUsuNome.setText(null);
+            txtUsuCPF.setText(null);
+            txtUsuCEP.setText(null);
+            txtUsuEmail.setText(null);
+            txtUsuFone.setText(null);
+            txtUsuLogin.setText(null);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, txtUsuId.getText() + " não é um identificador válido.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
-        }
+        } 
     }
+    
     //metodo responsavel pela remoção de usuarios
-    private void remover(){
+    private void remover() {
         //a etrutura abaixo confirma a remoão do usuario
         int confirma=JOptionPane.showConfirmDialog(null, "Tem certeza que deseja remover este usuário? ", "Atenção", JOptionPane.YES_NO_OPTION);
         if (confirma==JOptionPane.YES_NO_OPTION) {
             String sql = "delete from tbusuarios where iduser=?";
             try {
-                pst=conexao.prepareStatement(sql);
-                pst.setString(1, txtUsuId.getText());
-                int apagado = pst.executeUpdate();
-                if( apagado > 0 ){
-                    JOptionPane.showMessageDialog(null, "Usuario Removido com Sucesso ");
-                   
-                    txtUsuId.setText(null);
-                    txtUsuNome.setText(null);
-                    txtUsuCPF.setText(null);
-                    txtUsuCEP.setText(null);
-                    txtUsuEmail.setText(null);
-                    txtUsuFone.setText(null);
-                    txtUsuLogin.setText(null);
-                    txtUsuSenha.setText(null);
-                    CboUsuPerfil.setSelectedItem(null);
-                }
+                UsuarioDao<Usuario> usuarioDao = daoFactory.getUsuarioDao();
+                usuarioDao.delete(Integer.parseInt(txtUsuId.getText()));
+                
+                JOptionPane.showMessageDialog(null, "Usuário deletado com sucesso.");
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, txtUsuId.getText() + " não é um identificador válido.");
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e);
             }
             
-        } else {
         }
     }
             

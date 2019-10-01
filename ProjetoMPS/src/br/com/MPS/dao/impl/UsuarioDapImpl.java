@@ -60,7 +60,7 @@ public class UsuarioDapImpl extends BaseDaoImpl<Usuario> implements UsuarioDao<U
     @Override
     public void save(Usuario usuario) throws DaoException {
         String sql = "insert into tbusuarios(iduser,usuario,cpf,cep,email,fone,login,senha,perfil) values(?,?,?,?,?,?,?,?,?)";
-        try(PreparedStatement pst = conexao.prepareStatement(sql)) {
+        try (PreparedStatement pst = conexao.prepareStatement(sql)) {
             pst.setInt(1, usuario.getId());
             pst.setString(2, usuario.getUsuario());
             pst.setString(3, usuario.getCpf());
@@ -81,13 +81,38 @@ public class UsuarioDapImpl extends BaseDaoImpl<Usuario> implements UsuarioDao<U
     }
 
     @Override
-    public void update(Usuario t) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void update(Usuario usuario) throws DaoException {
+        String sql = "update tbusuarios set usuario=?, cpf=?, cep=?, email=?, fone=?, login=?, senha=?, perfil=? where iduser=? ";
+        
+        try (PreparedStatement pst = conexao.prepareStatement(sql)) {
+            pst.setString(1, usuario.getUsuario());
+            pst.setString(2, usuario.getCpf());
+            pst.setString(3, usuario.getCep());
+            pst.setString(4, usuario.getEmail());
+            pst.setString(5, usuario.getFone());
+            pst.setString(6, usuario.getLogin());
+            pst.setString(7, usuario.getSenha());
+            pst.setString(8, usuario.getPerfil());
+            pst.setInt(9, usuario.getId());
+            
+            pst.executeUpdate();
+            
+        } catch (Exception e) {
+            throw new DaoException("Falha ao editar usuario", e);
+        } finally {
+            closeConexao();
+        }
     }
 
     @Override
-    public void delete(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void delete(int id) throws DaoException {
+        String sql = "delete from tbusuarios where iduser=?";
+        try (PreparedStatement pst = conexao.prepareStatement(sql)) {
+            pst.setInt(1, id);
+            pst.executeUpdate();
+        } catch (Exception e) {
+            throw new DaoException("Falha ao deletar usuario", e);
+        }
     }
     
 }
