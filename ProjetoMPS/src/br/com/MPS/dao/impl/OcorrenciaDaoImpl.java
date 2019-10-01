@@ -12,7 +12,7 @@ import br.com.MPS.entity.Ocorrencia;
  *
  * @author Edvaldo
  */
-public class OcorrenciaDaoImpl implements OcorrenciaDao<Ocorrencia>{
+public class OcorrenciaDaoImpl extends BaseDaoImpl<Ocorrencia> implements OcorrenciaDao<Ocorrencia>{
 
     @Override
     public Ocorrencia get(int id) {
@@ -26,6 +26,11 @@ public class OcorrenciaDaoImpl implements OcorrenciaDao<Ocorrencia>{
 
     @Override
     public void update(Ocorrencia t) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void delete(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

@@ -8,8 +8,8 @@ package br.com.MPS.dao;
 /**
  *
  * @author Edvaldo
- * @param <T>
+ * @param <Ocorrencia>
  */
-public interface OcorrenciaDao<T> extends BaseDao<T> {
+public interface OcorrenciaDao<Ocorrencia> extends BaseDao<Ocorrencia> {
     
 }

@@ -11,6 +11,12 @@ package br.com.MPS.telas;
  */
 import java.sql.*;
 import br.com.MPS.dao.ConnectionFactory;
+import br.com.MPS.dao.DaoAbstractFactory;
+import br.com.MPS.dao.DaoException;
+import br.com.MPS.dao.UsuarioDao;
+import br.com.MPS.dao.impl.DaoFactoryImpl;
+import br.com.MPS.entity.Usuario;
+import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
 
 public class TelaCadCidadao extends javax.swing.JFrame {
@@ -18,6 +24,8 @@ public class TelaCadCidadao extends javax.swing.JFrame {
     Connection conexao = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
+    
+    DaoAbstractFactory daoFactory = new DaoFactoryImpl();
 
     /**
      * Creates new form TelaCadCidadao
@@ -28,86 +36,65 @@ public class TelaCadCidadao extends javax.swing.JFrame {
     }
 
     private void consultar() {
-        //metodo para consultar usuario
-        String sql = "select * from tbusuarios where iduser = ?";
+        
+        UsuarioDao<Usuario> usuarioDao = daoFactory.getUsuarioDao();
+        
         try {
-            pst = conexao.prepareStatement(sql);
-            pst.setString(1, txtUsuId.getText());
-            rs = pst.executeQuery();
-            if (rs.next()) {
-                txtUsuNome.setText(rs.getString(2));
-                txtUsuCPF.setText(rs.getString(3));
-                txtUsuCEP.setText(rs.getString(4));
-                txtUsuEmail.setText(rs.getString(5));
-                txtUsuFone.setText(rs.getString(6));
-                txtUsuLogin.setText(rs.getString(7));
-                //txtUsuSenha.setText(rs.getString(8));
-                CboUsuPerfil.setSelectedItem(rs.getString(9));
-
-            } else {
-                JOptionPane.showMessageDialog(null, " Usuario não cadastrado ");
-                // as linhas abaixo "limpam" os campos
-                txtUsuNome.setText(null);
-                txtUsuCPF.setText(null);
-                txtUsuCEP.setText(null);
-                txtUsuEmail.setText(null);
-                txtUsuFone.setText(null);
-                txtUsuLogin.setText(null);
-                //txtUsuSenha.setText(rs.getString(8));
-                //CboUsuPerfil.setSelectedItem(null);
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
+            Usuario usuario = usuarioDao.get(Integer.parseInt(txtUsuId.getText()));
+            
+            txtUsuNome.setText(usuario.getUsuario());
+            txtUsuCPF.setText(usuario.getCpf());
+            txtUsuCEP.setText(usuario.getCep());
+            txtUsuEmail.setText(usuario.getEmail());
+            txtUsuFone.setText(usuario.getFone());
+            txtUsuLogin.setText(usuario.getLogin());
+            CboUsuPerfil.setSelectedItem(usuario.getPerfil());
+        } catch (DaoException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+            // as linhas abaixo "limpam" os campos
+            txtUsuNome.setText(null);
+            txtUsuCPF.setText(null);
+            txtUsuCEP.setText(null);
+            txtUsuEmail.setText(null);
+            txtUsuFone.setText(null);
+            txtUsuLogin.setText(null);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Digite um identificador válido");
         }
     }
 
     //metodo para adicionar usuários
     private void adicionar() {
-        String sql = "insert into tbusuarios(iduser,usuario,cpf,cep,email,fone,login,senha,perfil) values(?,?,?,?,?,?,?,?,?)";
+        UsuarioDao<Usuario> usuarioDao = daoFactory.getUsuarioDao();
+        
         try {
-            pst = conexao.prepareStatement(sql);
-            pst.setString(1, txtUsuId.getText());
-            pst.setString(2, txtUsuNome.getText());
-            pst.setString(3, txtUsuCPF.getText());
-            pst.setString(4, txtUsuCEP.getText());
-            pst.setString(5, txtUsuEmail.getText());
-            pst.setString(6, txtUsuFone.getText());
-            pst.setString(7, txtUsuLogin.getText());
-            pst.setString(8, txtUsuSenha.getText());
-            pst.setString(9, CboUsuPerfil.getSelectedItem().toString());
-            // validação dos campos obrigatorios
-            if (txtUsuId.getText().isEmpty()||(txtUsuNome.getText().isEmpty()|| (txtUsuCPF.getText().isEmpty()|| (txtUsuCEP.getText().isEmpty()
-                    || (txtUsuEmail.getText().isEmpty() || (txtUsuFone.getText().isEmpty() || (txtUsuLogin.getText().isEmpty() || 
-                    (txtUsuSenha.getText().isEmpty() )))))))) {
-                
-                JOptionPane.showMessageDialog(null, " Preencha todos os Campos Obrigatório ");
-
-            } else {
-
-                //a linha abaixo atualiza a tabela usuarios com os dados do formulario
-                // a estrutura abaixo é usada para confirmar a inserção dos dados na tabela
-                int adicionado = pst.executeUpdate();
-                //a linha abaixo serve de apoio para entedimendo da logica
-                //System.out.println(adicionado);
-                if (adicionado > 0) {
-                    JOptionPane.showMessageDialog(null, " Usuario Cadastrado com Sucesso ");
-                    txtUsuId.setText(null);
-                    txtUsuNome.setText(null);
-                    txtUsuCPF.setText(null);
-                    txtUsuCEP.setText(null);
-                    txtUsuEmail.setText(null);
-                    txtUsuFone.setText(null);
-                    txtUsuLogin.setText(null);
-                    //txtUsuSenha.setText(rs.getString(8));
-                    //CboUsuPerfil.setSelectedItem(null);
-                    
-                    
-                }
-            }
-        } catch (Exception e) {
+            Usuario usuario = new Usuario.Builder()
+                .setId(Integer.parseInt(txtUsuId.getText()))
+                .setUsuario(txtUsuNome.getText())
+                .setCpf(txtUsuCPF.getText())
+                .setCep(txtUsuCEP.getText())
+                .setEmail(txtUsuEmail.getText())
+                .setFone(txtUsuFone.getText())
+                .setLogin(txtUsuLogin.getText())
+                .setSenha(txtUsuSenha.getText())
+                .setPerfil(CboUsuPerfil.getSelectedItem().toString())
+                .build();
+            
+            usuarioDao.save(usuario);
+            
+            JOptionPane.showMessageDialog(null, " Usuario Cadastrado com Sucesso ");
+            txtUsuId.setText(null);
+            txtUsuNome.setText(null);
+            txtUsuCPF.setText(null);
+            txtUsuCEP.setText(null);
+            txtUsuEmail.setText(null);
+            txtUsuFone.setText(null);
+            txtUsuLogin.setText(null);
+        } catch (DaoException | HeadlessException e) {
             JOptionPane.showMessageDialog(null, e);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, txtUsuId.getText() + " não é um identificador válido.");
         }
-
     }
     
     //Criando o metodo para alterar dados do usuario

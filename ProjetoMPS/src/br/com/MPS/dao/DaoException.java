@@ -8,15 +8,15 @@ package br.com.MPS.dao;
 /**
  *
  * @author Edvaldo
- * @param <T>
  */
-public interface BaseDao<T> {
-    
-    T get(int id) throws DaoException;
-    
-    void save(T t) throws DaoException;
-    
-    void update(T t) throws DaoException;
-    
-    void delete(int id) throws DaoException;
+public class DaoException extends Exception {
+
+    public DaoException(String message) {
+        super(message);
+    }
+
+    public DaoException(String message, Throwable cause) {
+        super(message, cause);
+    }
+ 
 }

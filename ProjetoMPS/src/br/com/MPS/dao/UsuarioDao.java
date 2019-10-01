@@ -8,9 +8,9 @@ package br.com.MPS.dao;
 /**
  *
  * @author Edvaldo
- * @param <T>
+ * @param <Usuario>
  */
-public interface UsuarioDao<T> extends BaseDao<T> {
+public interface UsuarioDao<Usuario> extends BaseDao<Usuario> {
     
-    T getByLoginESenha(String login, String senha);
+    Usuario getByLoginESenha(String login, String senha);
 }

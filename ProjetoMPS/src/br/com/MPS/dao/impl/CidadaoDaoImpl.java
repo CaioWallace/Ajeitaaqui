@@ -12,7 +12,7 @@ import br.com.MPS.entity.Cidadao;
  *
  * @author Edvaldo
  */
-public class CidadaoDaoImpl implements CidadaoDao<Cidadao> {
+public class CidadaoDaoImpl extends BaseDaoImpl<Cidadao> implements CidadaoDao<Cidadao>  {
 
     @Override
     public Cidadao get(int id) {
@@ -26,6 +26,11 @@ public class CidadaoDaoImpl implements CidadaoDao<Cidadao> {
 
     @Override
     public void update(Cidadao t) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void delete(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
