@@ -9,22 +9,15 @@ package br.com.MPS.telas;
  *
  * @author Edvaldo
  */
-import java.sql.*;
-import br.com.MPS.dao.ConnectionFactory;
 import br.com.MPS.dao.DaoAbstractFactory;
 import br.com.MPS.dao.DaoException;
 import br.com.MPS.dao.UsuarioDao;
 import br.com.MPS.dao.impl.DaoFactoryImpl;
 import br.com.MPS.entity.Usuario;
-import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
 
 public class TelaCadCidadao extends javax.swing.JFrame {
 
-    Connection conexao = null;
-    PreparedStatement pst = null;
-    ResultSet rs = null;
-    
     DaoAbstractFactory daoFactory = new DaoFactoryImpl();
 
     /**
@@ -32,7 +25,6 @@ public class TelaCadCidadao extends javax.swing.JFrame {
      */
     public TelaCadCidadao() {
         initComponents();
-        conexao = new ConnectionFactory().getConnection();
     }
 
     private void consultar() {

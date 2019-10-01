@@ -83,4 +83,7 @@ on (O.idcidadao = C.idcid);
 
 
 ALTER TABLE tbusuarios
-CREATE COLUMN perfil VARCHAR(20);
+ADD COLUMN perfil VARCHAR(20);
+
+ALTER TABLE tbocorrencia
+ADD COLUMN Stts VARCHAR(45);
