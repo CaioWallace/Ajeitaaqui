@@ -18,19 +18,72 @@ import br.com.MPS.dao.UsuarioDao;
 import br.com.MPS.dao.impl.DaoFactoryImpl;
 import br.com.MPS.dao.impl.DeleteUsuarioCommand;
 import br.com.MPS.entity.Usuario;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 public class TelaCadCidadao extends javax.swing.JFrame {
 
     DaoAbstractFactory daoFactory = new DaoFactoryImpl();
+    List<Memento> savedStates = new ArrayList<>();
 
     /**
      * Creates new form TelaCadCidadao
      */
     public TelaCadCidadao() {
         initComponents();
+        KeyListener listener = new OnKeyUpListener();
+        
+        txtUsuId.addKeyListener(listener);
+        txtUsuNome.addKeyListener(listener);
+        txtUsuCPF.addKeyListener(listener);
+        txtUsuCEP.addKeyListener(listener);
+        txtUsuEmail.addKeyListener(listener);
+        txtUsuFone.addKeyListener(listener);
+        txtUsuLogin.addKeyListener(listener);
+        txtUsuSenha.addKeyListener(listener);
+        
+        //salvando estado inical do form (que é vazio)
+        pushMemento(saveToMemento());
     }
+    
+    private void pushMemento(Memento memento) {
+        savedStates.add(memento);
+        if (savedStates.size() > 100) {
+            savedStates.remove(0);
+        }
+    }
+    
+    private Memento popMemento() {
+        return savedStates.remove(savedStates.size()-1);
+    }
+    
+    private class OnKeyUpListener implements KeyListener {
 
+        @Override
+        public void keyTyped(KeyEvent e) {
+            
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+                if (!savedStates.isEmpty()) {
+                    Memento memento = popMemento();
+                    restoreFromMemento(memento);
+                }
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            pushMemento(saveToMemento());
+        }
+        
+    }
+    
     private void consultar() {
         
         UsuarioDao<Usuario> usuarioDao = daoFactory.getUsuarioDao();
@@ -124,7 +177,47 @@ public class TelaCadCidadao extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, txtUsuId.getText() + " não é um identificador válido.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
-        } 
+        }
+    }
+    
+    private Memento saveToMemento() {
+        return new Memento(txtUsuId.getText(), txtUsuNome.getText(), txtUsuCPF.getText(), txtUsuCEP.getText(), txtUsuEmail.getText(), txtUsuFone.getText(), txtUsuLogin.getText(), txtUsuSenha.getText(), CboUsuPerfil.getSelectedItem().toString());
+    }
+    
+    private void restoreFromMemento(Memento memento) {
+        txtUsuId.setText(memento.id);
+        txtUsuNome.setText(memento.nome);
+        txtUsuCPF.setText(memento.cpf);
+        txtUsuCEP.setText(memento.cep);
+        txtUsuEmail.setText(memento.email);
+        txtUsuFone.setText(memento.fone);
+        txtUsuLogin.setText(memento.login);
+        txtUsuSenha.setText(memento.senha);
+        CboUsuPerfil.setSelectedItem(memento.perfil);
+    }
+    
+    static class Memento {
+        public String id;
+        public String nome;
+        public String cpf;
+        public String cep;
+        public String email;
+        public String fone;
+        public String login;
+        public String senha;
+        public String perfil;
+
+        public Memento(String id, String nome, String cpf, String cep, String email, String fone, String login, String senha, String perfil) {
+            this.id = id;
+            this.nome = nome;
+            this.cpf = cpf;
+            this.cep = cep;
+            this.email = email;
+            this.fone = fone;
+            this.login = login;
+            this.senha = senha;
+            this.perfil = perfil;
+        }
     }
     
     //metodo responsavel pela remoção de usuarios
@@ -173,12 +266,13 @@ public class TelaCadCidadao extends javax.swing.JFrame {
         txtUsuLogin = new javax.swing.JTextField();
         txtUsuSenha = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        CboUsuPerfil = new javax.swing.JComboBox<>();
+        CboUsuPerfil = new javax.swing.JComboBox<String>();
         jLabel10 = new javax.swing.JLabel();
         btnUsoCreate = new javax.swing.JButton();
         btnUsuRemove = new javax.swing.JButton();
         btnUsuRead = new javax.swing.JButton();
         btnUsuUpdate = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cadastro de Usuario");
@@ -202,13 +296,13 @@ public class TelaCadCidadao extends javax.swing.JFrame {
 
         jLabel9.setText("* Perfil");
 
-        CboUsuPerfil.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "admin", "user", " " }));
+        CboUsuPerfil.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "admin", "user", " " }));
 
         jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/Marca.png"))); // NOI18N
 
         btnUsoCreate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/create.png"))); // NOI18N
         btnUsoCreate.setToolTipText("Adicionar");
-        btnUsoCreate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnUsoCreate.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnUsoCreate.setPreferredSize(new java.awt.Dimension(80, 80));
         btnUsoCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -218,7 +312,7 @@ public class TelaCadCidadao extends javax.swing.JFrame {
 
         btnUsuRemove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/remove.png"))); // NOI18N
         btnUsuRemove.setToolTipText("Remover");
-        btnUsuRemove.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnUsuRemove.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnUsuRemove.setPreferredSize(new java.awt.Dimension(80, 80));
         btnUsuRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -228,7 +322,7 @@ public class TelaCadCidadao extends javax.swing.JFrame {
 
         btnUsuRead.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/read.png"))); // NOI18N
         btnUsuRead.setToolTipText("Consultar");
-        btnUsuRead.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnUsuRead.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnUsuRead.setPreferredSize(new java.awt.Dimension(80, 80));
         btnUsuRead.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -238,11 +332,18 @@ public class TelaCadCidadao extends javax.swing.JFrame {
 
         btnUsuUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/MPS/icones/update.png"))); // NOI18N
         btnUsuUpdate.setToolTipText("Editar");
-        btnUsuUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnUsuUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnUsuUpdate.setPreferredSize(new java.awt.Dimension(80, 80));
         btnUsuUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnUsuUpdateActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Ctrl+Z");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -307,6 +408,10 @@ public class TelaCadCidadao extends javax.swing.JFrame {
                         .addGap(31, 31, 31)
                         .addComponent(btnUsuUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -350,7 +455,9 @@ public class TelaCadCidadao extends javax.swing.JFrame {
                     .addComponent(txtUsuLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
                     .addComponent(txtUsuSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(76, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         setSize(new java.awt.Dimension(668, 499));
@@ -376,6 +483,13 @@ public class TelaCadCidadao extends javax.swing.JFrame {
         // chamar o metodo remover
         remover();
     }//GEN-LAST:event_btnUsuRemoveActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (!savedStates.isEmpty()) {
+            Memento memento = popMemento();
+            restoreFromMemento(memento);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -418,6 +532,7 @@ public class TelaCadCidadao extends javax.swing.JFrame {
     private javax.swing.JButton btnUsuRead;
     private javax.swing.JButton btnUsuRemove;
     private javax.swing.JButton btnUsuUpdate;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
