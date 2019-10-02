@@ -5,9 +5,21 @@
  */
 package br.com.MPS.telas;
 
+import br.com.MPS.dao.CidadaoDao;
 import java.sql.*;
 import br.com.MPS.dao.ConnectionFactory;
+import br.com.MPS.dao.DaoAbstractFactory;
+import br.com.MPS.dao.DaoException;
+import br.com.MPS.dao.DaoIterator;
+import br.com.MPS.dao.impl.DaoFactoryImpl;
+import br.com.MPS.entity.Cidadao;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 //a linha abaixo importa recursos da biblioteca rs2xml.jar
 import net.proteanit.sql.DbUtils;
 
@@ -21,6 +33,8 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
     PreparedStatement pst = null;
     ResultSet rs = null;
 
+    DaoAbstractFactory daoFactory = new DaoFactoryImpl();
+    
     /**
      * Creates new form TelaCadCidadaoComun
      */
@@ -76,19 +90,64 @@ public class TelaCadCidadaoComun extends javax.swing.JFrame {
 
     //metodo para pesquisar clientes pelo nome com filtro
     private void pesquisar_cidadao() {
-        String sql = "select * from tbcidadao where nomecid like ? ";
+        
+        CidadaoDao<Cidadao> cidadaoDao = daoFactory.getCidadaoDao();
+        
+        final List<Cidadao> resultadoBusca = new ArrayList<>();
+        
         try {
-            pst = conexao.prepareStatement(sql);
-            // caixa de pesquisa para o ?
-            //atenção ao "%" - continuação na String sql
-            pst.setString(1, txtComunPesquisar.getText() + "%");
-            rs = pst.executeQuery();
-            // a linha abaixo usa a biblioteca rs2xml.jar para prencher a tabela
+            DaoIterator<Cidadao> iterator = cidadaoDao.listarComecandoPor(txtComunPesquisar.getText());
+            while (iterator.hasNext()) {
+                Cidadao cidadao = iterator.next();
+                resultadoBusca.add(cidadao);
+            }
+            
+            AbstractTableModel tableModel = new AbstractTableModel() {
 
-            tblCidadao.setModel(DbUtils.resultSetToTableModel(rs));
+                @Override
+                public int getRowCount() {
+                    return resultadoBusca.size();
+                }
 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
+                @Override
+                public int getColumnCount() {
+                    return 3;
+                }
+
+                @Override
+                public Object getValueAt(int rowIndex, int columnIndex) {
+                    Cidadao cidadao = resultadoBusca.get(rowIndex);
+                    
+                    switch (columnIndex) {
+                        case 0:
+                         return cidadao.getId();
+                        case 1:
+                         return cidadao.getNome();
+                        case 2:
+                         return cidadao.getFone();
+                        default:
+                         return null;
+                    }
+                }
+                
+                @Override
+                public String getColumnName(int column) {
+                    switch (column) {
+                        case 0:
+                         return "id";
+                        case 1:
+                         return "Nome";
+                        case 2:
+                         return "Fone";
+                        default:
+                         return "";
+                    }
+                }
+            };
+            
+            tblCidadao.setModel(tableModel);
+        } catch (DaoException ex) {
+            JOptionPane.showMessageDialog(null, ex);
         }
     }
 

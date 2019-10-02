@@ -8,9 +8,11 @@ package br.com.MPS.dao;
 /**
  *
  * @author Edvaldo
- * @param <Cidadao>
+ * @param <T>
  */
-public interface CidadaoDao<Cidadao> extends BaseDao<Cidadao> {
-
-    DaoIterator<Cidadao> listarComecandoPor(String comeco) throws DaoException;
+public interface DaoIterator<T> {
+    
+    boolean hasNext();
+    
+    T next();
 }
